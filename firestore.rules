@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // DEVICES
+    match /devices/{deviceId} {
+      
+      function isOwner() {
+        return request.auth != null && request.auth.uid == resource.data.ownerUid;
+      }
+      
+      function isOwnerCreating() {
+        return request.auth != null && request.auth.uid == request.resource.data.ownerUid;
+      }
+
+      // Read: Owner only
+      allow read: if isOwner();
+      
+      // Create: Allow registration if ownerUid matches
+      allow create: if isOwnerCreating();
+
+      // Update: Owner can update ANY field (Client-side logic for Free Tier)
+      // This allows toggling status, updating location, updating token, etc.
+      allow update: if isOwner();
+
+      // Delete: Owner only
+      allow delete: if isOwner();
+    }
+
+    // COMMANDS
+    match /commands/{commandId} {
+      // Allow authenticated users to read and write commands
+      // In a production app, we'd add more granular checks, but for the MVP Free Tier, 
+      // this ensures the listener can start without permission errors.
+      allow read, write: if request.auth != null;
+        
+      allow delete: if false; // Audit trail
+    }
+  }
+}

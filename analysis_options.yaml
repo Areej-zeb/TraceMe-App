@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_fields: true
+    use_build_context_synchronously: true
+    library_private_types_in_public_api: false
+    directory_path: false

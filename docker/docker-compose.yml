@@ -1,0 +1,11 @@
+services:
+  tooling:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../scripts:/app/scripts
+      - ../service-account.json:/app/service-account.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
+    command: tail -f /dev/null
